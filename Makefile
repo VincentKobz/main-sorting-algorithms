@@ -1,12 +1,16 @@
 CXX=g++
-CXFLAGS= -std=c99 -Wall -Wextra -Werror -pedantic -g -fsanitize=address
+CXFLAGS= -std=c99 -Wall -Wextra -Werror -pedantic -g -fsanitize=address -lgtest
 
-TARGET=main
-OBJS= main.o
+TARGET=test
+OBJS= test.o
 
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CXX) $(CXFLAGS) -o $@ $^
 
+clean:
+	$(RM) $(OBJS) $(TARGET)
 
+.PHONY:
+	clean
