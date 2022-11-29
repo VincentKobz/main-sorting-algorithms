@@ -2,14 +2,6 @@
 #include "sorting.hh"
 #include <cmath>
 
-template <typename T>
-void sorting<T>::swap(std::vector<T> &vec, size_t elt1, size_t elt2)
-{
-    auto tmp = vec[elt1];
-    vec[elt1] = vec[elt2];
-    vec[elt2] = tmp;
-}
-
 template<typename T>
 void sorting<T>::bubble_sort(std::vector<T> &vec)
 {
@@ -23,9 +15,7 @@ void sorting<T>::bubble_sort(std::vector<T> &vec)
         {
             if (vec[i] > vec[i + 1])
             {
-                auto tmp = vec[i];
-                vec[i] = vec[i + 1];
-                vec[i + 1] = tmp;
+                std::swap(vec[i + 1], vec[i]);
                 detect = true;
             }
         }
@@ -45,9 +35,7 @@ void sorting<T>::bubble_sort_optimize(std::vector<T> &vec)
         {
             if (vec[i] > vec[i + 1])
             {
-                auto tmp = vec[i];
-                vec[i] = vec[i + 1];
-                vec[i + 1] = tmp;
+                std::swap(vec[i + 1], vec[i]);
                 detect = true;
             }
         }
@@ -62,12 +50,10 @@ void sorting<T>::insertion_sort(std::vector<T> &vec)
     while (j < vec.size())
     {
         size_t i = j;
+
         while (i > 0 && vec[i - 1] > vec[i])
         {
-            auto tmp = vec[i - 1];
-            vec[i - 1] = vec[i];
-            vec[i] = tmp;
-
+            std::swap(vec[i - 1], vec[i]);
             i -= 1;
         }
         j += 1;
@@ -89,9 +75,7 @@ void sorting<T>::selection_sort(std::vector<T> &vec)
 
         if (min != i)
         {
-            auto tmp = vec[i];
-            vec[i] = vec[min];
-            vec[min] = tmp;
+            std::swap(vec[i], vec[min]);
         }
     }
 }
@@ -173,7 +157,7 @@ void sorting<T>::sift_up(std::vector<T> &heap, size_t pad, size_t end)
 
         if (heap[parent] < heap[child])
         {
-            swap(heap, parent, child);
+            std::swap(heap[parent], heap[child]);
         }
         else
         {
@@ -184,20 +168,58 @@ void sorting<T>::sift_up(std::vector<T> &heap, size_t pad, size_t end)
     }
 }
 
+// O(n log(n))
 template <typename T>
 void sorting<T>::heap_sort(std::vector<T> &vec)
 {
     auto len = vec.size() - 1;
 
     heapify(vec, len);
-    for (auto i : vec)
-        std::cout << i << " ";
-    std::cout << "\n";
 
     while (len > 0)
     {
-        swap(vec, len, 0);
+        std::swap(vec[len], vec[0]);
         heapify(vec, len);
         len--;
     }
+}
+
+template <typename T>
+void sorting<T>::quick_sort_recur(std::vector<T> &vec, int left, int right)
+{
+    if (left >= right)
+        return;
+
+    auto pivot = partition(vec, left, right);
+
+    quick_sort_recur(vec, left, pivot);
+    quick_sort_recur(vec, pivot + 1, right);
+}
+
+template <typename T>
+auto sorting<T>::partition(std::vector<T> &vec, int left, int right)
+{
+    T pivot = vec[std::floor((right + left) / 2)];
+    auto p_left = left - 1;
+    auto p_right =  right + 1;
+
+    for (;;)
+    {
+        while (vec[++p_left] < pivot)
+            ;
+
+        while (vec[--p_right] > pivot)
+            ;
+
+        if (p_left >= p_right)
+            return p_right;
+
+        std::swap(vec[p_left], vec[p_right]);
+    }
+}
+
+template <typename T>
+void sorting<T>::quick_sort(std::vector<T> &vec)
+{
+    quick_sort_recur(vec, 0, vec.size() - 1);
 }

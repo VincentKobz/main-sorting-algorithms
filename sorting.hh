@@ -17,7 +17,9 @@ class sorting
         void heap_sort(std::vector<T> &vec);
         void sift_up(std::vector<T> &heap, size_t pad, size_t end);
         void heapify(std::vector<T> &vec, size_t nb);
-        void swap(std::vector<T> &vec, size_t elt1, size_t elt2);
+        void quick_sort_recur(std::vector<T> &vec, int left, int right);
+        auto partition(std::vector<T> &vec, int left, int right);
+        void quick_sort(std::vector<T> &vec);
 };
 
 #include "sorting.hxx"
