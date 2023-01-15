@@ -3,7 +3,7 @@
 #include <cmath>
 
 template<typename T>
-void sorting<T>::bubble_sort(std::vector<T> &vec)
+void Sorting<T>::bubble_sort(std::vector<T> &vec)
 {
     auto len = vec.size();
     bool detect = true;
@@ -23,7 +23,7 @@ void sorting<T>::bubble_sort(std::vector<T> &vec)
 }
 
 template<typename T>
-void sorting<T>::bubble_sort_optimize(std::vector<T> &vec)
+void Sorting<T>::bubble_sort_optimize(std::vector<T> &vec)
 {
     auto len = vec.size();
     bool detect = true;
@@ -44,7 +44,7 @@ void sorting<T>::bubble_sort_optimize(std::vector<T> &vec)
 }
 
 template<typename T>
-void sorting<T>::insertion_sort(std::vector<T> &vec)
+void Sorting<T>::insertion_sort(std::vector<T> &vec)
 {
     size_t j = 1;
     while (j < vec.size())
@@ -61,7 +61,7 @@ void sorting<T>::insertion_sort(std::vector<T> &vec)
 }
 
 template <typename T>
-void sorting<T>::selection_sort(std::vector<T> &vec)
+void Sorting<T>::selection_sort(std::vector<T> &vec)
 {
     for (size_t i = 0; i < vec.size(); i++)
     {
@@ -81,7 +81,7 @@ void sorting<T>::selection_sort(std::vector<T> &vec)
 }
 
 template <typename T>
-void sorting<T>::merge(std::vector<T> &vec, int left, int mid, int right)
+void Sorting<T>::merge(std::vector<T> &vec, int left, int mid, int right)
 {
     auto len_1 = mid - left + 1;
     auto len_2 = right - mid;
@@ -116,7 +116,7 @@ void sorting<T>::merge(std::vector<T> &vec, int left, int mid, int right)
 }
 
 template <typename T>
-void sorting<T>::merge_recur(std::vector<T> &vec, int left, int right)
+void Sorting<T>::merge_recur(std::vector<T> &vec, int left, int right)
 {
     if (left >= right)
         return;
@@ -129,13 +129,13 @@ void sorting<T>::merge_recur(std::vector<T> &vec, int left, int right)
 }
 
 template <typename T>
-void sorting<T>::merge_sort(std::vector<T> &vec)
+void Sorting<T>::merge_sort(std::vector<T> &vec)
 {
     merge_recur(vec, 0, vec.size() - 1);
 }
 
 template <typename T>
-void sorting<T>::heapify(std::vector<T> &vec, size_t nb)
+void Sorting<T>::heapify(std::vector<T> &vec, size_t nb)
 {
     auto counter = 1;
 
@@ -147,7 +147,7 @@ void sorting<T>::heapify(std::vector<T> &vec, size_t nb)
 }
 
 template <typename T>
-void sorting<T>::sift_up(std::vector<T> &heap, size_t pad, size_t end)
+void Sorting<T>::sift_up(std::vector<T> &heap, size_t pad, size_t end)
 {
     auto child = end;
 
@@ -170,7 +170,7 @@ void sorting<T>::sift_up(std::vector<T> &heap, size_t pad, size_t end)
 
 // O(n log(n))
 template <typename T>
-void sorting<T>::heap_sort(std::vector<T> &vec)
+void Sorting<T>::heap_sort(std::vector<T> &vec)
 {
     auto len = vec.size() - 1;
 
@@ -185,7 +185,7 @@ void sorting<T>::heap_sort(std::vector<T> &vec)
 }
 
 template <typename T>
-void sorting<T>::quick_sort_recur(std::vector<T> &vec, int left, int right)
+void Sorting<T>::quick_sort_recur(std::vector<T> &vec, int left, int right)
 {
     if (left >= right)
         return;
@@ -197,7 +197,7 @@ void sorting<T>::quick_sort_recur(std::vector<T> &vec, int left, int right)
 }
 
 template <typename T>
-auto sorting<T>::partition(std::vector<T> &vec, int left, int right)
+auto Sorting<T>::partition(std::vector<T> &vec, int left, int right)
 {
     T pivot = vec[std::floor((right + left) / 2)];
     auto p_left = left - 1;
@@ -219,7 +219,50 @@ auto sorting<T>::partition(std::vector<T> &vec, int left, int right)
 }
 
 template <typename T>
-void sorting<T>::quick_sort(std::vector<T> &vec)
+void Sorting<T>::quick_sort(std::vector<T> &vec)
 {
     quick_sort_recur(vec, 0, vec.size() - 1);
+}
+
+template <typename T>
+void Sorting<T>::counting_sort(std::vector<T> &vec, int index)
+{
+    std::vector<T> counter(10, 0);
+    std::vector<T> result(vec.size(), 0);
+
+    for (auto elt: vec)
+    {
+        counter[(elt / index) % 10] += 1;
+    }
+
+    for (auto i = 1; i < counter.size(); i++)
+    {
+        counter[i] += counter[i - 1];
+    }
+
+    for (int i = vec.size() - 1; i >= 0; i--)
+    {
+        auto number = (vec[i] / index) % 10;
+        result[counter[number] - 1] = vec[i];
+        counter[number] -= 1;
+    }
+    vec = result;
+}
+
+template <typename T>
+void Sorting<T>::radix_sort(std::vector<T> &vec)
+{
+    if (! IsInt<T>::value)
+    {
+        throw "Argument must be a vector of integers for Radix sort algorithm !";
+    }
+
+    auto max_length = std::to_string(my_max_element(vec.begin(), vec.end())).length();
+
+    auto div = 1;
+    for (auto i = 1; i <= max_length; i++)
+    {
+        counting_sort(vec, div);
+        div *= 10;
+    }
 }
