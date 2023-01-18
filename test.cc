@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <algorithm>
 #include <random>
-#include "sorting.hh"
+#include "headers/sorting.hh"
 
 // Fixture Class used for testing std::vector of int
 class SortingInteger : public ::testing::Test
